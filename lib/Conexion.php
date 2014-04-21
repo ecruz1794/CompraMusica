@@ -15,26 +15,22 @@
 		{
 			$this->basedatos='musica_database';
 			$this->servidor='localhost';
-			$this->usuario='root';
-			$this->password='';	
+			$this->usuario='sa';
+			$this->password='123';	
 			
 		}
 		
 		#Metodo encargado de realizar la coneccion con la base de datos
 		function conectarBD()
 		{
-			#Estilo orientado a objetos ---  new mysqli(servidor, usuario, contraseña, baseDatos)
-			#devuelve un identificador de recurso o false si la conexión falla
-			$mysqli=new mysqli($this->servidor,$this->usuario,$this->password,$this->basedatos); #Realiza la conexion con la bd  tipo OO
-			
-			/* verificar la conexion */
-			if(mysqli_connect_errno())  #devuelve el codigo de error de la ultima llamada conexion
-			{
-				echo "<h1>Error al conectar a la base de datos </h1>". mysqli_connect_error(); #devuelve una descripción del último error de conexión
-				exit();
+			try{
+				## conexion a sql server...
+				$this->conexion = mssql_connect($this->servidor,$this->usuario,$this->password);
+				## seleccionamos la base de datos
+				mssql_select_db($this->basedatos,$this->conexion);
+			} catch (Exception $e) {
+				echo "Caught Exception ('{$e->getMessage()}')\n{$e}\n";
 			}
-			
-			$this->conexion=$mysqli;
 			return true;
 		}
 		function getServidor()
@@ -66,7 +62,7 @@
 		
 		function closeConexion()
 		{
-			mysqli_close($this->conexion);
+			mssql_close($this->conexion);
 		}
 	}
 ?>
