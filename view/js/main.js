@@ -1,10 +1,26 @@
 
 $( document ).ready(function() {
-    $( ".accordion" ).accordion({
-      collapsible: true
-    });
+	
+	$('#btn_popularbuy').click(function(){
+		validCheckPopularMusic();
+	});
+	
 });
 
-function patito(){
-	alert("HOLA MUNDO");
+function validCheckPopularMusic()
+{
+	var idsCancion="";
+	var existPopular=false;
+	$('.chk_popular').each(function( index ) {
+		if($( this ).is(':checked')){
+			existPopular=true;
+			if(idsCancion==''){
+				idsCancion=$( this ).val();
+			}else{
+				idsCancion=idsCancion+','+$( this ).val();
+			}
+		}
+	});
+	$('#checkedPopular').val(idsCancion);
+	if(!existPopular){alert('seleccione almenos una cancion!');}else{$("#frm_musicPopular").submit();}
 }

@@ -1,5 +1,7 @@
 <?php
-$ingreso = false;
+include("../lib/sesion.php");
+$ingreso = existeSesion();
+
 ?>
 
 	<div class="navbar navbar-inverse navbar-fixed-top">
@@ -39,13 +41,14 @@ $ingreso = false;
 			  <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Nuevo Miembro <b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <form class="navbar-form navbar-right">
+                <form class="navbar-form navbar-right" method = "post" action="../controller/userController.php">
+				<input type="hidden" name="action" value = 1> 
 					<div class="form-group">
-					  <input type="text" placeholder="Nombre" class="form-control">
+					  <input type="text" placeholder="Nombre" class="form-control" name="nombre">
 					  <li class="divider"></li>
 					</div>
 					<div class="form-group">
-					  <input type="text" placeholder="Email" class="form-control">
+					  <input type="text" placeholder="Email" class="form-control" name="email">
 					  <li class="divider"></li>
 					</div>
 					<div class="form-group">
@@ -53,15 +56,7 @@ $ingreso = false;
 					  <li class="divider"></li>
 					</div>
 					<div class="form-group">
-					  <input id="numTarjeta" name="numTarjeta" type="text" placeholder="Número Tarjeta" class="form-control">
-					  <li class="divider"></li>
-					</div>
-					<div class="form-group">
 					  <input id="clave" name="clave" type="password" placeholder="Clave" class="form-control">
-					  <li class="divider"></li>
-					</div>
-					<div class="form-group">
-					  <input id="montoMembresia" name="montoMembresia" type="text" placeholder="Monto a Pagar" class="form-control">
 					  <li class="divider"></li>
 					</div>
 					<button type="submit" class="btn btn-success">Enviar</button>
@@ -70,11 +65,11 @@ $ingreso = false;
               </ul>
             </li>
 			<?php }else{ ?>
-				<li><a id="cuenta" name="cuenta" style="display: true" href="cuentaUsuario.php">Cuenta</a></li>
+				<li><a style="display: true" href="cuentaUsuario.php">Mi Cuenta (<?php echo $_SESSION["name"]?>)</a></li>
 				<li class="divider"></li>
-				<li><a id="historialCompras" name="historialCompras" style="display: true" href="historialCompras.php">Historial Compras</a></li>
+				<li><a i style="display: true" href="historialCompras.php">Historial Compras</a></li>
 				<li class="divider"></li>
-				<li><a id="salir" name="salir" style="display: true" href="index.php">Salir</a></li>
+				<li><a  style="display: true" href="../controller/userController.php?option=logout">Salir</a></li>
 				<li class="divider"></li>
 			<?php } ?>
 			  

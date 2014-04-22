@@ -13,7 +13,7 @@
 		#Metodo constructor que inicializa las variables
 		function Conexion()
 		{
-			$this->basedatos='musica_database';
+			$this->basedatos='musica';
 			$this->servidor='localhost';
 			$this->usuario='sa';
 			$this->password='123';	
@@ -25,13 +25,16 @@
 		{
 			try{
 				## conexion a sql server...
-				$this->conexion = mssql_connect($this->servidor,$this->usuario,$this->password);
-				## seleccionamos la base de datos
-				mssql_select_db($this->basedatos,$this->conexion);
+				$connectionInfo = array( "Database"=>$this->basedatos, "UID"=>$this->usuario, "PWD"=>$this->password);
+				$this->conexion = $conn = sqlsrv_connect( $this->servidor, $connectionInfo );
+				
 			} catch (Exception $e) {
 				echo "Caught Exception ('{$e->getMessage()}')\n{$e}\n";
 			}
-			return true;
+			
+			if( $this->conexion === false ) {
+				die( print_r( sqlsrv_errors(), true));
+			}else{ return true;}
 		}
 		function getServidor()
 		{
@@ -51,39 +54,30 @@
 		}
 		function executeQuery($sql)
 		{
-			$result_set = $this->conexion->query($sql);
-			return $result_set;
+			$stmt = sqlsrv_query($this->conexion,$sql);
+			
+			if( $stmt === false) {
+				die( print_r( sqlsrv_errors(), true) );
+			}
+			// Devolver cada fila como un objeto.
+			// Puesto que no se especifica ninguna clase, cada fila devolverá un objeto stdClass.
+			// Los nombres de propiedades corresponden a nombres de campo.
+			$result = array();
+			$contador=0;
+			while( $obj = sqlsrv_fetch_object( $stmt)) {
+				$result[$contador]['Nombre']=$obj->Nombre;
+				$result[$contador]['Cuenta']=$obj->Cuenta;
+				$contador++;
+			}
+			return $result;
 		}
 		function getConexion()
 		{
 			return $this->conexion;
-		}
-		
-		
+		}		
 		function closeConexion()
 		{
-			mssql_close($this->conexion);
+			sqlsrv_close($this->conexion);
 		}
 	}
-?>
-<?php /*
-try {
-	## conexion a sql server...
-	$link=mssql_connect("NABUCODONOSOR","sa","******");
-	## seleccionamos la base de datos
-	mssql_select_db("DevTroce",$link);
-	## generamos el query
-	$result=mssql_query("select * from Clientes",$link);
-	## recorremos todos los registros
-	while($row=mssql_fetch_array($result))
-	{
-		$counter++; 
-		echo ("$counter Nombres: ".$row["Nombres"].", Direccion: " .$row["Direccion"]."<br/>"); 
-		echo "<hr>";
-	}
-} catch (Exception $e) {
-    echo "Caught Exception ('{$e->getMessage()}')\n{$e}\n";
-}
-## cerramos la conexion
-mssql_close($link);*/
 ?>
